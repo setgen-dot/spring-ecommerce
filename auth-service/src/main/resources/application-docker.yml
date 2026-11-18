@@ -1,0 +1,43 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    username: postgres
+    password: password
+    url: jdbc:postgresql://postgres:5432/credentials
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        show_sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: auth-service
+
+rsa:
+  private-key: classpath:keys/private.pem
+  public-key: classpath:keys/public.pem
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      user-service:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 5
+        slidingWindowSize: 10
+  retry:
+    instances:
+      user-service:
+        maxAttempts: 3
+        waitDuration: 500ms

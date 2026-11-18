@@ -1,0 +1,48 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: product-service
+  datasource:
+    username: postgres
+    password: password
+    url: jdbc:postgresql://postgres:5432/products
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        show_sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://auth-service:8081/.well-known/jwks.json
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: product-service
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      category-service:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 5
+        slidingWindowSize: 10
+  retry:
+    instances:
+      category-service:
+        maxAttempts: 3
+        waitDuration: 500ms

@@ -1,0 +1,46 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: order-service
+  datasource:
+    username: postgres
+    password: password
+    url: jdbc:postgresql://postgres:5432/orders
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        show_sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://auth-service:8081/.well-known/jwks.json
+  kafka:
+    bootstrap-servers: kafka:29092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: order-service
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      cart-service:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 5
+        slidingWindowSize: 10
+  retry:
+    instances:
+      cart-service:
+        maxAttempts: 3
+        waitDuration: 500ms
