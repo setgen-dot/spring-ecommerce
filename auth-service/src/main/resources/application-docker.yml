@@ -24,10 +24,6 @@ eureka:
   instance:
     hostname: auth-service
 
-rsa:
-  private-key: classpath:keys/private.pem
-  public-key: classpath:keys/public.pem
-
 resilience4j:
   circuitbreaker:
     instances:

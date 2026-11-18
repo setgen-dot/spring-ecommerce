@@ -18,14 +18,6 @@
 
 ## Быстрый старт
 
-При первом запуске создайте локальную пару RSA-ключей из корня проекта. Для этого нужен OpenSSL. Если у вас уже есть локальная пара ключей, этот шаг можно пропустить.
-
-```bash
-mkdir -p auth-service/src/main/resources/keys
-openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out auth-service/src/main/resources/keys/private.pem
-openssl pkey -in auth-service/src/main/resources/keys/private.pem -pubout -out auth-service/src/main/resources/keys/public.pem
-```
-
 Из корня проекта запустите Docker Compose.
 
 ```bash
@@ -37,7 +29,7 @@ docker compose ps
 
 Для запуска приложений из IDE нужны Java 21 и Maven. Поднимите инфраструктуру командой `docker compose up -d postgres redis zookeeper kafka`, дождитесь готовности контейнеров и выполните `mvn clean package`. Запускайте сервисы с профилем по умолчанию, который использует адреса на `localhost`.
 
-> Настройки PostgreSQL и сгенерированные ключи предназначены для локальной демонстрации.
+При запуске без RSA-ключей `auth-service` создаёт пару в памяти. После перезапуска сервиса войдите снова, чтобы получить новый JWT. Для постоянной пары укажите пути `rsa.private-key` и `rsa.public-key`. Если оба PEM-файла уже есть в `auth-service/src/main/resources/keys`, сервис использует их.
 
 ---
 
